@@ -1,28 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
-
-<!--
-  mule-audit-api — SCENARIO: MIXED — 1 old pattern + 1 already-new pattern
-  Expected result: SUCCESS — only the old-pattern appender is updated; the
-                   already-new appender is left untouched (idempotent).
--->
+<!-- mule-audit-api | main | MIXED: 1 OLD + 1 already-NEW | Expected: SUCCESS (1 replaced) -->
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
-    <!-- This appender still has the OLD pattern — needs migration -->
+    <!-- This appender has OLD pattern - needs migration -->
     <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
         <param name="Target" value="System.out"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d %-5p [%t] %c - %m%n"/>
+            <PatternLayout pattern="%d %-5p [%t] %c - %m%n"/>
         </layout>
     </appender>
 
-    <!-- This appender already has the NEW pattern — should NOT be changed -->
+    <!-- This appender already has the NEW pattern - should NOT be changed -->
     <appender name="AUDIT_FILE" class="org.apache.log4j.RollingFileAppender">
         <param name="File"           value="${app.home}/logs/mule-audit-api.log"/>
         <param name="MaxFileSize"    value="20MB"/>
         <param name="MaxBackupIndex" value="30"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{ISO8601} %-5level [%thread] %logger{36} - %msg%n"/>
+            <PatternLayout pattern="%d{ISO8601} %-5level [%thread] %logger{36} - %msg%n"/>
         </layout>
     </appender>
 
