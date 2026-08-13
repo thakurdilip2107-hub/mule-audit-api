@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+          http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+          http://www.mulesoft.org/schema/mule/http  http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+
+    <http:listener-config name="HTTP_Listener_Configuration"
+                          host="0.0.0.0"
+                          port="8085"/>
+
+    <flow name="auditEventFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration"
+                       path="/api/audit/events"
+                       allowedMethods="POST"/>
+        <logger message="Recording audit event" level="INFO"/>
+        <set-payload value='{"status":"recorded","eventId":"evt-#[System.currentTimeMillis()]"}'/>
+    </flow>
+
+    <flow name="getAuditTrailFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration"
+                       path="/api/audit/trail/{entityId}"/>
+        <logger message="Fetching audit trail for entity: #[flowVars.entityId]" level="INFO"/>
+        <set-payload value='{"entityId":"#[flowVars.entityId]","events":[]}'/>
+    </flow>
+
+</mule>
